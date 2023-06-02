@@ -51,7 +51,9 @@ data LandingPagesController
     | DeleteLandingPageAction { landingPageId :: !(Id LandingPage) }
     deriving (Eq, Show, Data)
 
-
+data StyleGuidesController
+    = StyleGuideAction
+    deriving (Eq, Show, Data)
 
 data ImageStyleController
     = RenderImageStyleAction { width :: !Int, height :: !Int, originalImagePath :: !Text}
