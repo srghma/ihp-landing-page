@@ -2,6 +2,7 @@ module Web.View.ParagraphCtas.New where
 import Web.View.Prelude
 import Web.Element.Types
 import Web.Element.ElementWrap
+import Web.Element.InnerElementLayout
 
 data NewView = NewView
     { paragraphCta :: ParagraphCta
@@ -21,7 +22,7 @@ instance View NewView where
                 ]
 
 renderForm :: ParagraphCta -> [LandingPage] -> Html
-renderForm paragraphCta landingPages = formFor paragraphCta [hsx|
+renderForm paragraphCta landingPages = formForWithoutJavascript paragraphCta [hsx|
     {(hiddenField #landingPageId)}
     {(hiddenField #weight)}
     {visibleForm paragraphCta landingPages}
@@ -31,12 +32,13 @@ renderForm paragraphCta landingPages = formFor paragraphCta [hsx|
             visibleForm paragraphCta landingPages =
                 [hsx|
                     {(textField #title) {required = True}}
-                    {(textareaField #body) {required = True}}
-                     {(selectField #refLandingPageId landingPages) {required = True, fieldLabel = "Landing page", helpText = "Select the landing page you want to link to."}}
+                    {(textareaWysiwygField #body)}
+                    {(selectField #refLandingPageId landingPages) {required = True, fieldLabel = "Landing page", helpText = "Select the landing page you want to link to."}}
                     {submitButton}
                 |]
                 |> wrapVerticalSpacing AlignNone
                 |> wrapContainerWide
+
 
 instance CanSelect LandingPage where
     type SelectValue LandingPage = Id LandingPage

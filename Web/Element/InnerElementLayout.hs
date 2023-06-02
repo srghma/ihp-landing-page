@@ -41,3 +41,14 @@ buildElementLayoutSplitImageAndContent imageUrl items =
     |]
     where
         image = [hsx|<img src={pathTo $ RenderImageStyleAction 400 200 imageUrl} class="w-full h-full" />|]
+
+textareaWysiwygField ::
+  ( ?formContext::FormContext model
+  , HasField fieldName model value
+  , HasField "meta" model MetaBag
+  , InputValue value
+  , KnownSymbol fieldName
+  , KnownSymbol (GetModelName model)
+  ) =>
+  Proxy fieldName -> FormField
+textareaWysiwygField field = (textareaField field) {additionalAttributes = [("data-tinymce", "true")]}
