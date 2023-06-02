@@ -14,6 +14,7 @@ let
             wai
             text
             hlint
+            xss-sanitize
             p.ihp
         ];
         otherDeps = p: with p; [
@@ -22,6 +23,7 @@ let
             nodejs
         ];
         projectPath = ./.;
+        withHoogle = true;
     };
 in
     haskellEnv

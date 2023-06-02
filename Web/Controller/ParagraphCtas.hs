@@ -5,6 +5,7 @@ import Web.View.ParagraphCtas.Index
 import Web.View.ParagraphCtas.New
 import Web.View.ParagraphCtas.Edit
 import Web.View.ParagraphCtas.Show
+import Text.HTML.SanitizeXSS (sanitize)
 
 instance Controller ParagraphCtasController where
     action ParagraphCtaAction = do
@@ -71,4 +72,7 @@ buildParagraphCta paragraphCta = paragraphCta
     |> fill @'["landingPageId", "weight", "title", "body", "refLandingPageId"]
     |> validateField #title nonEmpty
     |> validateField #body nonEmpty
+    |> sanitizeHtml #body
     |> validateField #refLandingPageId nonEmpty
+
+sanitizeHtml field = modify field sanitize
