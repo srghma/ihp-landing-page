@@ -22,8 +22,38 @@ direnv allow
 eval "$(direnv hook bash)"
 eval "$(direnv export bash)"
 
+
+#### cache
+
+nix-create-gcroots-for () {
+  set -e
+
+  # shell_file=$(test -f ./shell.nix && echo "shell.nix" || echo "default.nix")
+  shell_file=$1
+
+  echo "nix-create-gcroots-for: running for '$1'"
+
+  mkdir -p .gcroots
+
+  # add shell as gc-root in /nix/var/nix/gcroots/auto
+  nix-instantiate $shell_file --indirect --add-root $PWD/.gcroots/shell.drv
+
+  # add shell dependencies as gc-root in /nix/var/nix/gcroots/auto
+  # NOTE: one can use keep-outputs=true in /etc/nix/nix.conf and omit this step (https://github.com/NixOS/nix/issues/2208)
+  nix-store --indirect --add-root $PWD/.gcroots/shell.dep --realise $(nix-store --query --references $PWD/.gcroots/shell.drv)
+}
+
+nix-create-gcroots-for default.nix
+# nix-create-gcroots-for devenv.nix
+
+#### cache END
+
 # You can define custom env vars here:
 # export CUSTOM_ENV_VAR=".."
+
+# https://ihp.digitallyinduced.com/Guide/editors.html#using-ihp-with-visual-studio-code-vscode
+# To make file paths clickable inside the web browser (e.g. when a type error happens), export this env var in your shell (e.g. in .bashrc):
+export IHP_EDITOR="code --goto"
 
 # Finally start the dev server
 RunDevServer
